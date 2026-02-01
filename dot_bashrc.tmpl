@@ -33,6 +33,11 @@ if command -v starship >/dev/null; then
   eval "$(starship init bash)"
 fi
 
+# Load custom aliases if present
+if [[ -f $HOME/.bash/aliases.bash ]]; then
+  source $HOME/.bash/aliases.bash
+fi
+
 # use bat instead of cat
 if command -v bat >/dev/null; then
   alias cat="bat"

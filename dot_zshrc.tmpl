@@ -93,6 +93,11 @@ fi
 
 # some nice functions and aliases
 
+# Load custom aliases if present
+if [[ -f $HOME/.zsh/aliases.zsh ]] ; then
+  source $HOME/.zsh/aliases.zsh
+fi
+
 ## use bat instead of cat 
 if command -v bat > /dev/null ; then
   alias cat="bat"
