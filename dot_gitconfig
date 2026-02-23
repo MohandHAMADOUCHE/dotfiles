@@ -1,18 +1,36 @@
 [user]
-	name = Rio Kierkels
-	email = riokierkels@gmail.com
+	name = Mohand HAMADOUCHE
+	email = mohand.hamadouche.ext@orange.com
 
 [init]
 	defaultBranch = main
 
 [pull]
-	rebase = false
+	rebase = true
+
+[rebase]
+	autoStash = true
 
 [push]
 	autoSetupRemote = true
 
 [branch]
 	autoSetupMerge = true
+
+[diff]
+	algorithm = histogram
+
+[merge]
+	conflictstyle = zdiff3
+
+[alias]
+	lg = log --graph --decorate --oneline --all
+	st = status -sb
+	co = checkout
+	br = branch -vv
+	ci = commit
+	last = log -1 HEAD
+	amend = commit --amend --no-edit
 
 [filter "lfs"]
 	required = true

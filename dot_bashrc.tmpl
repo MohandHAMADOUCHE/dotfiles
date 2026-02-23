@@ -11,7 +11,22 @@ fi
 # setup gpg-agent ssh
 unset SSH_AGENT_PID
 if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
-        export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+  export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+fi
+
+# fallback to ssh-agent when gpg-agent is not available
+SSH_AGENT_CONF="$HOME/.ssh/agent"
+if [ -e "$SSH_AGENT_CONF" ]; then
+  . "$SSH_AGENT_CONF" > /dev/null
+fi
+ssh-add -l >/dev/null 2>&1
+if [ $? -ne 0 ]; then
+  ssh-agent > "$SSH_AGENT_CONF"
+  if [ $? -ne 0 ]; then
+    echo "ERROR: Could not launch ssh-agent" >&2
+  fi
+  . "$SSH_AGENT_CONF" > /dev/null
+  ssh-add
 fi
 {{- end}}
 
@@ -38,7 +53,12 @@ if [[ -f $HOME/.bash/aliases.bash ]]; then
   source $HOME/.bash/aliases.bash
 fi
 
-# use bat instead of cat
+# Load git completion
+if [[ -f $HOME/.bash/git-completion.bash ]]; then
+  source $HOME/.bash/git-completion.bash
+fi
+
+# use bat instead of c
 if command -v bat >/dev/null; then
-  alias cat="bat"
+  alias c="bat"
 fi

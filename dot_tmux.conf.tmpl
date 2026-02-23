@@ -1,19 +1,76 @@
-set-window-option -g mode-keys vi
-bind-key -r -T prefix k select-pane -U
-bind-key -r -T prefix j select-pane -D
-bind-key -r -T prefix h select-pane -L
-bind-key -r -T prefix l select-pane -R
+# Automatically set window title
+set-window-option -g automatic-rename on
+set-window-option -g automatic-rename-format '#{host_short}'
+set-option -g set-titles on
+set-option -g set-titles-string '#{host_short}'
 
-set-option -sg escape-time 10
+set -g default-terminal 'xterm-256color'
 
-{{ if and .chezmoi.osRelease (eq .chezmoi.osRelease.id "ubuntu" "debian") -}}
-source /usr/share/powerline/bindings/tmux/powerline.conf
+# Big history on screen
+set -g history-limit 50000
 
-{{- else if and .chezmoi.osRelease (eq .chezmoi.osRelease.id "fedora") -}}
-source /usr/share/tmux/powerline.conf
+# VI mode is prefered for me
+set -g status-keys vi
+setw -g mode-keys vi
 
-{{- else if eq .chezmoi.os "darwin" -}}
-run-shell "/Users/{{ .chezmoi.username }}/Library/Python/3.10/bin/powerline-daemon -q"
-run-shell "/Users/{{ .chezmoi.username }}/Library/Python/3.10/bin/powerline-config tmux setup"
+# Disable to not interact with kitty
+setw -g mouse off
+setw -g monitor-activity on
 
-{{- end }}
+# Horizontal split
+bind-key v split-window -h
+# Vertical split
+bind-key s split-window -v
+
+# Pane zoom
+bind -n C-s resize-pane -Z
+
+# Use CTRL-arrow keys without prefix key to resize pane
+bind -n M-Down  resize-pane -D
+bind -n M-Up    resize-pane -U
+bind -n M-Left  resize-pane -L
+bind -n M-Right resize-pane -R
+
+# Use Alt-arrow keys without prefix key to switch panes
+bind -n S-Down  select-pane -D
+bind -n S-Up    select-pane -U
+bind -n S-Left  select-pane -L
+bind -n S-Right select-pane -R
+
+# CRTL-arrow to switch windows
+bind -n C-Left  previous-window
+bind -n C-Right next-window
+
+# Shift-UP to switch layout
+bind -n C-n next-layout
+
+# CTRL-Space to enter in copy mode
+bind -n C-Space copy-mode
+
+# No delay for escape key press
+set -sg escape-time 0
+
+# Reload tmux config
+bind r source-file ~/.tmux.conf
+
+# Switch session
+bind -n C-Up switch-client -n
+bind -n C-Down switch-client -p
+
+# THEME
+# for colour codes see https://i.stack.imgur.com/e63et.png
+set -g status-bg colour24
+set -g status-fg colour52
+
+# Since 2.9
+#set -g window-status-current-bg red
+#set -g window-status-current-fg green
+#set -g window-status-current-attr bold
+set -g window-status-current-style bg=red,fg=green,bold
+
+set -g status-interval 10
+set -g status-left-length 30
+set -g status-left '#[fg=black](#S)'
+set -g status-right '#[fg=black]#(cut -d " " -f 1-3 /proc/loadavg)#[default] #[fg=black]%H:%M#[default]'
+# Activer la souris dans tmux
+set -g mouse on
