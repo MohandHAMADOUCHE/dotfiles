@@ -1,39 +1,60 @@
+# Identité utilisée pour signer les commits.
 [user]
 	name = Mohand HAMADOUCHE
 	email = mohand.hamadouche.ext@orange.com
 
+# Branche par défaut lors de la création d'un nouveau dépôt.
 [init]
 	defaultBranch = main
 
+# `git pull` fait un rebase (historique linéaire) plutôt qu'un merge.
 [pull]
 	rebase = true
 
+# Si l'arbre de travail est sale, Git fait un stash avant rebase puis le réapplique.
 [rebase]
 	autoStash = true
 
+# Au 1er `git push` d'une nouvelle branche, configure automatiquement son upstream.
 [push]
 	autoSetupRemote = true
 
+# Quand une branche locale est créée depuis une distante, active le tracking automatiquement.
 [branch]
 	autoSetupMerge = true
 
+# Algorithme de diff souvent plus lisible sur des changements complexes.
 [diff]
 	algorithm = histogram
 
+# Affichage des conflits avec base commune + 2 côtés (très utile).
 [merge]
 	conflictstyle = zdiff3
 
+# Raccourcis de commandes Git.
 [alias]
+	# Log compact avec graphe de l'historique.
 	lg = log --graph --decorate --oneline --all
+	# Statut court + info de branche.
 	st = status -sb
+	# Checkout d'une branche/révision.
 	co = checkout
+	# Liste des branches locales avec tracking.
 	br = branch -vv
+	# Commit.
 	ci = commit
+	# Dernier commit.
 	last = log -1 HEAD
+	# Amend du dernier commit sans modifier le message.
 	amend = commit --amend --no-edit
 
+# Paramètres du filtre Git LFS: Git stocke des pointeurs, le contenu réel reste dans LFS (gros binaires, modèles, médias, archives).
 [filter "lfs"]
+	# Le filtre est requis pour éviter des commits incohérents.
 	required = true
+	# Convertit le fichier en pointeur LFS à l'ajout (`git add`).
 	clean = git-lfs clean -- %f
+	# Restaure le vrai contenu au checkout/pull.
 	smudge = git-lfs smudge -- %f
+	# Mode moderne et performant du filtre LFS.
 	process = git-lfs filter-process
