@@ -73,3 +73,23 @@ set -g status-left '#[fg=black](#S)'
 set -g status-right '#[fg=black]#(cut -d " " -f 1-3 /proc/loadavg)#[default] #[fg=black]%H:%M#[default]'
 # Activer la souris dans tmux
 set -g mouse on
+
+set -g remain-on-exit
+
+
+# BEGIN WSL2 SSH PAGEANT BRIDGE TMUX
+# Ensure tmux uses bash for command execution and inject wrapper in non-interactive shells
+set -g default-shell /bin/bash
+set-environment -gF SSH_AUTH_SOCK "#{HOME}/.ssh/wsl-ssh-agent.sock"
+set-environment -gF BASH_ENV "#{HOME}/.bash/tmux-bash-env.bash"
+
+# Keep terminal native selection/paste behavior by default
+set -g mouse off
+
+# Toggle mouse mode on/off
+bind -n C-g if -F '#{mouse}' 'set -g mouse off; display-message "Mouse: OFF"' 'set -g mouse on; display-message "Mouse: ON"'
+
+# Kill current session / all tmux sessions
+bind -n C-x confirm-before -p "Kill session #S? (y/n)" kill-session
+bind -n C-k confirm-before -p "Kill tmux server (all sessions)? (y/n)" kill-server
+# END WSL2 SSH PAGEANT BRIDGE TMUX

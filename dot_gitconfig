@@ -2,6 +2,13 @@
 [user]
 	name = Mohand HAMADOUCHE
 	email = mohand.hamadouche.ext@orange.com
+	signingkey = ~/.ssh/pki_sign.pub
+[gpg]
+		format = ssh
+[commit]
+	gpgsign = true
+[gpg "ssh"]
+		allowedSignersFile = ~/.ssh/allowed_signers
 
 # Branche par défaut lors de la création d'un nouveau dépôt.
 [init]
@@ -47,6 +54,10 @@
 	last = log -1 HEAD
 	# Amend du dernier commit sans modifier le message.
 	amend = commit --amend --no-edit
+	# Mise à jour de la branche courante depuis origin/main avec rebase. (fetch + rebase + status)
+	# ! indique que c'est une commande shell personnalisée, pas une commande Git standard.
+	# Affiche aussi le nombre de commits d'avance par rapport à main et les 5 derniers commits si la branche n'est pas à jour.
+	up = ! git fetch origin && git pull origin $(git branch --show-current) && echo \"--- ÉTAT vs MAIN ---\" && commits=$(git log --oneline origin/main..$(git branch --show-current) | wc -l) && [ $commits -eq 0 ] && echo \"✅ $(git branch --show-current) = main \" || git log --oneline origin/main..$(git branch --show-current) | head -5
 
 # Paramètres du filtre Git LFS: Git stocke des pointeurs, le contenu réel reste dans LFS (gros binaires, modèles, médias, archives).
 [filter "lfs"]

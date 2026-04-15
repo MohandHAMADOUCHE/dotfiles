@@ -7,7 +7,7 @@ if [[ -d $HOME/.local/bin ]]; then
   export PATH=$HOME/.local/bin:$PATH
 fi
 
-{{if not .remote -}}
+{{if not $remote -}}
 # setup gpg-agent ssh
 unset SSH_AGENT_PID
 if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
@@ -61,4 +61,13 @@ fi
 # use bat instead of c
 if command -v bat >/dev/null; then
   alias c="bat"
+fi
+
+# Bash completion (core)
+if ! shopt -oq posix; then
+  if [ -r /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -r /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
 fi
