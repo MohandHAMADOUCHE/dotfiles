@@ -6,7 +6,7 @@
 [gpg]
 		format = ssh
 [commit]
-	gpgsign = true
+		gpgsign = true
 [gpg "ssh"]
 		allowedSignersFile = ~/.ssh/allowed_signers
 
@@ -41,7 +41,8 @@
 # Raccourcis de commandes Git.
 [alias]
 	# Log compact avec graphe de l'historique.
-	lg = log --graph --decorate --oneline --all
+	# lg = log --graph --decorate --oneline --all
+	lg = log --graph --all --decorate --pretty=format:'%C(yellow)%h%Creset %C(bold magenta)[%G?]%Creset %C(auto)%d%Creset %s %Cgreen(%cr) %C(cyan)<%an>%Creset'
 	# Statut court + info de branche.
 	st = status -sb
 	# Checkout d'une branche/révision.
@@ -57,7 +58,7 @@
 	# Mise à jour de la branche courante depuis origin/main avec rebase. (fetch + rebase + status)
 	# ! indique que c'est une commande shell personnalisée, pas une commande Git standard.
 	# Affiche aussi le nombre de commits d'avance par rapport à main et les 5 derniers commits si la branche n'est pas à jour.
-	up = ! git fetch origin && git pull origin $(git branch --show-current) && echo \"--- ÉTAT vs MAIN ---\" && commits=$(git log --oneline origin/main..$(git branch --show-current) | wc -l) && [ $commits -eq 0 ] && echo \"✅ $(git branch --show-current) = main \" || git log --oneline origin/main..$(git branch --show-current) | head -5
+	up = ! git fetch origin && git pull origin $(git branch --show-current) && echo \"--- ÉTAT vs MAIN ---\" && (git diff --quiet origin/main..HEAD && echo \"✅ $(git branch --show-current) = main\" || git log --oneline origin/main..HEAD | head -5)
 
 # Paramètres du filtre Git LFS: Git stocke des pointeurs, le contenu réel reste dans LFS (gros binaires, modèles, médias, archives).
 [filter "lfs"]
@@ -69,3 +70,5 @@
 	smudge = git-lfs smudge -- %f
 	# Mode moderne et performant du filtre LFS.
 	process = git-lfs filter-process
+[core]
+	quotepath = false

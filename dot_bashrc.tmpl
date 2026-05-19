@@ -58,10 +58,40 @@ if [[ -f $HOME/.bash/git-completion.bash ]]; then
   source $HOME/.bash/git-completion.bash
 fi
 
+# Load orange bashrc if present
+if [[ -f $HOME/.bashrc.orange ]]; then
+  source $HOME/.bashrc.orange
+fi
+
+# Load kubectl and helm completions if available
+if command -v kubectl >/dev/null 2>&1; then
+  # shellcheck source=/usr/bin/kubectl
+  source <(kubectl completion bash)
+fi
+
+if command -v helm >/dev/null 2>&1; then
+  # shellcheck source=/usr/bin/helm
+  source <(helm completion bash)
+fi
+
 # use bat instead of c
 if command -v bat >/dev/null; then
   alias c="bat"
 fi
+
+if [ -f "$HOME/.venv/bin/activate" ]; then
+  . "$HOME/.venv/bin/activate"
+fi
+
+# Added by wsl2-ssh-pageant-bridge installer
+export SSH_AUTH_SOCK="$HOME/.ssh/wsl-ssh-agent.sock"
+
+# BEGIN WSL2 SSH PAGEANT BRIDGE BASHRC
+# In tmux interactive shells, load centralized ssh wrapper function
+if [ -n "$TMUX" ] && [ -f "$HOME/.bash/tmux-bash-env.bash" ]; then
+  . "$HOME/.bash/tmux-bash-env.bash"
+fi
+# END WSL2 SSH PAGEANT BRIDGE BASHRC
 
 # Bash completion (core)
 if ! shopt -oq posix; then
@@ -71,3 +101,13 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+gitfind() {
+    if [ $# -eq 0 ]; then
+        # Pas d'argument → cherche dans . (courant)
+        find . -type d -name ".git" -prune -exec dirname {} \;
+    else
+        # 1+ arguments → cherche dans dossier(s) donné(s)
+        find "$@" -type d -name ".git" -prune -exec dirname {} \;
+    fi
+}
