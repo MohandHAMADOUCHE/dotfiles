@@ -13,7 +13,7 @@ lsd = "1.2.0"
 neovim = "0.11.6"
 node = "25.5.0"
 ripgrep = "15.1.0"
-starship = "1.24.2"
+starship = "1.26.0"
 "ubi:nushell/nushell" = { version = "0.110.0", exe = "nu" }
 zellij = "0.43.1"
 zoxide = "0.9.8"
