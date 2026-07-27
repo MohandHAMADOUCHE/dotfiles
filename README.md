@@ -44,10 +44,11 @@ This will:
 
 | Machine | Default Git email | SSH commit signing key |
 |---------|-------------------|------------------------|
-| `perso` | `mohand_hamadouche@yahoo.com` | `~/.ssh/pageant-default.pub` (exported by wsl2-ssh-pageant-bridge) |
-| `pro`   | `mohand.hamadouche.ext@orange.com` | `~/.ssh/pki_sign.pub` |
+| `perso` | `mohand_hamadouche@yahoo.com` | `~/.ssh/pageant-default.pub` (from Pageant export) |
+| `pro`   | `mohand.hamadouche.ext@orange.com` | `~/.ssh/pki_sign.pub` (explicit; stable if several Pageant keys) |
 
-Both machines enable `commit.gpgsign = true` with `gpg.format = ssh`.
+Both machines enable `commit.gpgsign = true` with `gpg.format = ssh`.  
+On `pro`, if two certs are loaded in Pageant, SSH auth can use both; commit signing stays on `pki_sign.pub`.
 
 Recommended terminal font: **JetBrainsMono NF** (Windows name) / JetBrainsMono Nerd Font (Linux).
 
