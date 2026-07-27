@@ -4,7 +4,7 @@
 {{- /* Choix machine : demandé une fois à l'init, stocké dans chezmoi.toml */ -}}
 {{- $machine := promptChoiceOnce . "machine" "Quel PC ?" (list "perso" "pro") -}}
 {{- $defaultEmail := "mohand_hamadouche@yahoo.com" -}}
-{{- $signingKey := "~/.ssh/yubikey-piv-9a.pub" -}}
+{{- $signingKey := "~/.ssh/pageant-default.pub" -}}
 {{- if eq $machine "pro" -}}
 {{-   $defaultEmail = "mohand.hamadouche.ext@orange.com" -}}
 {{-   $signingKey = "~/.ssh/pki_sign.pub" -}}

@@ -44,7 +44,7 @@ This will:
 
 | Machine | Default Git email | SSH commit signing key |
 |---------|-------------------|------------------------|
-| `perso` | `mohand_hamadouche@yahoo.com` | `~/.ssh/yubikey-piv-9a.pub` (PIV / Pageant) |
+| `perso` | `mohand_hamadouche@yahoo.com` | `~/.ssh/pageant-default.pub` (exported by wsl2-ssh-pageant-bridge) |
 | `pro`   | `mohand.hamadouche.ext@orange.com` | `~/.ssh/pki_sign.pub` |
 
 Both machines enable `commit.gpgsign = true` with `gpg.format = ssh`.
