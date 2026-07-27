@@ -4,12 +4,14 @@
 {{- /* Choix machine : demandé une fois à l'init, stocké dans chezmoi.toml */ -}}
 {{- $machine := promptChoiceOnce . "machine" "Quel PC ?" (list "perso" "pro") -}}
 {{- $defaultEmail := "mohand_hamadouche@yahoo.com" -}}
+{{- $signingKey := "~/.ssh/yubikey-piv-9a.pub" -}}
 {{- if eq $machine "pro" -}}
 {{-   $defaultEmail = "mohand.hamadouche.ext@orange.com" -}}
+{{-   $signingKey = "~/.ssh/pki_sign.pub" -}}
 {{- end -}}
 {{- $email := promptStringOnce . "email" (printf "Email Git (%s)" $machine) $defaultEmail -}}
 {{- $name := promptStringOnce . "name" "Nom Git" "Mohand HAMADOUCHE" -}}
-{{- $gpgSign := eq $machine "pro" -}}
+{{- $signingKey = promptStringOnce . "signingKey" (printf "Git SSH signing key (%s)" $machine) $signingKey -}}
 
 sourceDir = {{ .chezmoi.sourceDir | quote }}
 
@@ -18,7 +20,8 @@ sourceDir = {{ .chezmoi.sourceDir | quote }}
   machine = {{ $machine | quote }}
   email = {{ $email | quote }}
   name = {{ $name | quote }}
-  gpgSign = {{ $gpgSign }}
+  gpgSign = true
+  signingKey = {{ $signingKey | quote }}
 
 {{- if not $remote }}
 [git]

@@ -2,18 +2,13 @@
 [user]
 	name = {{ .name }}
 	email = {{ .email }}
-{{- if .gpgSign }}
-	signingkey = ~/.ssh/pki_sign.pub
+	signingkey = {{ .signingKey }}
 [gpg]
 	format = ssh
 [commit]
 	gpgsign = true
 [gpg "ssh"]
 	allowedSignersFile = ~/.ssh/allowed_signers
-{{- else }}
-[commit]
-	gpgsign = false
-{{- end }}
 
 # Branche par défaut lors de la création d'un nouveau dépôt.
 [init]

@@ -42,10 +42,12 @@ This will:
 - Install chezmoi (if not present)
 - Apply all dotfiles to your home directory
 
-| Machine | Default Git email | SSH commit signing |
-|---------|-------------------|--------------------|
-| `perso` | `mohand_hamadouche@yahoo.com` | off |
-| `pro`   | `mohand.hamadouche.ext@orange.com` | on (`pki_sign.pub`) |
+| Machine | Default Git email | SSH commit signing key |
+|---------|-------------------|------------------------|
+| `perso` | `mohand_hamadouche@yahoo.com` | `~/.ssh/yubikey-piv-9a.pub` (PIV / Pageant) |
+| `pro`   | `mohand.hamadouche.ext@orange.com` | `~/.ssh/pki_sign.pub` |
+
+Both machines enable `commit.gpgsign = true` with `gpg.format = ssh`.
 
 Recommended terminal font: **JetBrainsMono NF** (Windows name) / JetBrainsMono Nerd Font (Linux).
 
