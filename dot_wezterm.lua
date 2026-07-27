@@ -15,7 +15,12 @@ if wezterm.config_builder then
 	config.hide_tab_bar_if_only_one_tab = true
 	config.window_decorations = "RESIZE"
 	config.window_background_opacity = 0.9
-	config.font = wezterm.font("DepartureMono")
+	config.font = wezterm.font_with_fallback({
+		"JetBrainsMono NF",
+		"JetBrainsMono Nerd Font",
+		"JetBrainsMono NFM",
+		"DepartureMono",
+	})
 	config.font_size = 12.0
 end
 

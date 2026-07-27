@@ -1,8 +1,24 @@
+{{- /* Détection environnement distant (Codespaces, SSH, conteneur, etc.) */ -}}
 {{- $remote := or (env "CODESPACES" | not | not) (env "SSH_CONNECTION" | not | not) (env "KUBERNETES_SERVICE_HOST" | not | not) (env "container" | not | not) (env "REMOTE_CONTAINERS" | not | not) (stat "/.dockerenv" | not | not) -}}
+
+{{- /* Choix machine : demandé une fois à l'init, stocké dans chezmoi.toml */ -}}
+{{- $machine := promptChoiceOnce . "machine" "Quel PC ?" (list "perso" "pro") -}}
+{{- $defaultEmail := "mohand_hamadouche@yahoo.com" -}}
+{{- if eq $machine "pro" -}}
+{{-   $defaultEmail = "mohand.hamadouche.ext@orange.com" -}}
+{{- end -}}
+{{- $email := promptStringOnce . "email" (printf "Email Git (%s)" $machine) $defaultEmail -}}
+{{- $name := promptStringOnce . "name" "Nom Git" "Mohand HAMADOUCHE" -}}
+{{- $gpgSign := eq $machine "pro" -}}
+
 sourceDir = {{ .chezmoi.sourceDir | quote }}
 
 [data]
   remote = {{ $remote }}
+  machine = {{ $machine | quote }}
+  email = {{ $email | quote }}
+  name = {{ $name | quote }}
+  gpgSign = {{ $gpgSign }}
 
 {{- if not $remote }}
 [git]

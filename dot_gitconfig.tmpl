@@ -1,14 +1,19 @@
-# Identité utilisée pour signer les commits.
+# Identité utilisée pour les commits (machine={{ .machine }}).
 [user]
-	name = Mohand HAMADOUCHE
-	email = mohand.hamadouche.ext@orange.com
+	name = {{ .name }}
+	email = {{ .email }}
+{{- if .gpgSign }}
 	signingkey = ~/.ssh/pki_sign.pub
 [gpg]
-		format = ssh
+	format = ssh
 [commit]
-		gpgsign = true
+	gpgsign = true
 [gpg "ssh"]
-		allowedSignersFile = ~/.ssh/allowed_signers
+	allowedSignersFile = ~/.ssh/allowed_signers
+{{- else }}
+[commit]
+	gpgsign = false
+{{- end }}
 
 # Branche par défaut lors de la création d'un nouveau dépôt.
 [init]

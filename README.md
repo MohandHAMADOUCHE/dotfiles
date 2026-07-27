@@ -35,9 +35,26 @@ Clone the repo and run the setup script:
 ```
 
 This will:
+- Print a clear **perso / pro** reminder, then run chezmoi
+- Ask once: **Which PC?** (`perso` / `pro`), then confirm Git email and name
+- Install **JetBrainsMono Nerd Font** (Linux + Windows under WSL) for terminal icons
 - Set your shell to zsh (if available)
 - Install chezmoi (if not present)
 - Apply all dotfiles to your home directory
+
+| Machine | Default Git email | SSH commit signing |
+|---------|-------------------|--------------------|
+| `perso` | `mohand_hamadouche@yahoo.com` | off |
+| `pro`   | `mohand.hamadouche.ext@orange.com` | on (`pki_sign.pub`) |
+
+Recommended terminal font: **JetBrainsMono NF** (Windows name) / JetBrainsMono Nerd Font (Linux).
+
+To re-prompt later (change machine):
+
+```sh
+chezmoi edit-config   # or delete [data].machine / email in ~/.config/chezmoi/chezmoi.toml
+chezmoi init --apply
+```
 
 ### 2. chezmoi
 
@@ -70,7 +87,7 @@ DevPod is supported via `.chezmoiexternals/devpod.toml`, which ensures the DevPo
 - **Multiplexers**: tmux, zellij
 - **Tools**: Managed with [mise](https://mise.jdx.dev/) (see `.config/mise/config.toml`)
 - **Kubernetes**: k9s with custom skin
-- **Fonts**: DepartureMono (auto-installed)
+- **Fonts**: JetBrainsMono Nerd Font / JetBrainsMono NF (auto-installed), DepartureMono
 
 ---
 

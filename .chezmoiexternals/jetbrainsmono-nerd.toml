@@ -1,0 +1,6 @@
+# JetBrainsMono Nerd Font (icônes starship / lsd / terminaux)
+# Mirror du setup script ; chezmoi update peut rafraîchir l'archive.
+[".local/share/fonts/JetBrainsMonoNerd"]
+type = "archive"
+url = "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/JetBrainsMono.tar.xz"
+refreshPeriod = "168h"

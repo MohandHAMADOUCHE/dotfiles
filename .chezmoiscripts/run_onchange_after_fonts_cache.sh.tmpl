@@ -1,0 +1,8 @@
+#!/bin/bash
+# fonts hash: {{ include ".chezmoiexternals/jetbrainsmono-nerd.toml" | sha256sum }}
+
+set -euo pipefail
+
+if command -v fc-cache >/dev/null 2>&1; then
+  fc-cache -f "{{ .chezmoi.homeDir }}/.local/share/fonts" >/dev/null 2>&1 || true
+fi

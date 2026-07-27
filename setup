@@ -2,15 +2,121 @@
 
 set -euo pipefail
 
-if command -v chezmoi >/dev/null; then
-  chezmoi init --apply --source $PWD
-  exit 0
-fi
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$ROOT"
 
-if command -v mise >/dev/null; then
-  mise exec chezmoi -- chezmoi init --apply --source $PWD
-  exit 0
-fi
+NERD_FONT_VERSION="v3.4.0"
+NERD_FONT_URL="https://github.com/ryanoasis/nerd-fonts/releases/download/${NERD_FONT_VERSION}/JetBrainsMono.tar.xz"
 
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply --source $PWD
+print_machine_banner() {
+  cat <<'EOF'
+
+============================================
+  Dotfiles — choix de machine (chezmoi)
+============================================
+  perso : email yahoo, pas de signature SSH
+  pro   : email Orange, signature SSH (PIV)
+
+  Chezmoi va te demander :
+    1) Quel PC ?  (perso / pro)
+    2) Email Git  (prérempli selon le choix)
+    3) Nom Git
+============================================
+
+EOF
+}
+
+install_jetbrains_nerd_font_linux() {
+  local dest="${HOME}/.local/share/fonts/JetBrainsMonoNerd"
+  if command -v fc-list >/dev/null 2>&1 && fc-list | grep -qi 'JetBrainsMono.*Nerd'; then
+    echo "==> JetBrainsMono Nerd Font déjà présente (Linux)"
+    return 0
+  fi
+  if [[ -d "${dest}" ]] && find "${dest}" -name '*.ttf' -print -quit | grep -q .; then
+    echo "==> Polices déjà extraites dans ${dest}"
+    if command -v fc-cache >/dev/null 2>&1; then
+      fc-cache -f "${HOME}/.local/share/fonts" >/dev/null 2>&1 || true
+    fi
+    return 0
+  fi
+
+  echo "==> Installation JetBrainsMono Nerd Font (${NERD_FONT_VERSION}) → ${dest}"
+  mkdir -p "${dest}"
+  local tmp
+  tmp="$(mktemp -d)"
+  # shellcheck disable=SC2064
+  trap "rm -rf '${tmp}'" RETURN
+  curl -fsSL "${NERD_FONT_URL}" -o "${tmp}/JetBrainsMono.tar.xz"
+  tar -xJf "${tmp}/JetBrainsMono.tar.xz" -C "${dest}"
+  if command -v fc-cache >/dev/null 2>&1; then
+    fc-cache -f "${HOME}/.local/share/fonts" >/dev/null 2>&1 || true
+  fi
+  echo "==> Fonts Linux OK"
+}
+
+install_jetbrains_nerd_font_windows() {
+  # Windows Terminal lit les polices Windows, pas celles de WSL.
+  if ! grep -qi microsoft /proc/version 2>/dev/null; then
+    return 0
+  fi
+  if ! command -v powershell.exe >/dev/null 2>&1; then
+    echo "==> powershell.exe absent : skip install font Windows"
+    return 0
+  fi
+
+  local linux_dir="${HOME}/.local/share/fonts/JetBrainsMonoNerd"
+  if [[ ! -d "${linux_dir}" ]]; then
+    return 0
+  fi
+
+  local win_user
+  win_user="$(cmd.exe /c 'echo %USERNAME%' 2>/dev/null | tr -d '\r')"
+  if [[ -z "${win_user}" || "${win_user}" == *'%'* ]]; then
+    echo "==> %USERNAME% Windows introuvable : skip font Windows"
+    return 0
+  fi
+
+  local win_fonts="/mnt/c/Users/${win_user}/AppData/Local/Microsoft/Windows/Fonts"
+  echo "==> Installation JetBrainsMono Nerd Font → ${win_fonts}"
+  mkdir -p "${win_fonts}"
+
+  local count=0
+  local f base
+  while IFS= read -r -d '' f; do
+    base="$(basename "${f}")"
+    if [[ ! -f "${win_fonts}/${base}" ]]; then
+      cp -f "${f}" "${win_fonts}/${base}"
+      count=$((count + 1))
+    fi
+  done < <(find "${linux_dir}" \( -name '*.ttf' -o -name '*.otf' \) -print0 2>/dev/null)
+
+  powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \
+    "\$fontDir = Join-Path \$env:LOCALAPPDATA 'Microsoft\Windows\Fonts'; \$reg = 'HKCU:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts'; \$props = Get-ItemProperty \$reg; foreach (\$p in @(\$props.PSObject.Properties)) { if (\$p.MemberType -eq 'NoteProperty' -and \$p.Name -like '*JetBrains*') { Remove-ItemProperty -Path \$reg -Name \$p.Name -Force -EA SilentlyContinue } }; Get-ChildItem \$fontDir -Filter 'JetBrains*.ttf' -File | ForEach-Object { New-ItemProperty -Path \$reg -Name (\$_.BaseName + ' (TrueType)') -Value \$_.FullName -PropertyType String -Force | Out-Null }; Write-Host 'Windows fonts registered (full path)'" \
+    || echo "==> Enregistrement registre fonts : skip/partial"
+
+  echo "==> Fonts Windows : ${count} nouveau(x) fichier(s)"
+  echo "    VS Code / Windows Terminal → Font → JetBrainsMono NF"
+  echo "    (nom Windows ; équivalent 'JetBrainsMono Nerd Font')"
+}
+
+run_chezmoi_init() {
+  print_machine_banner
+  if command -v chezmoi >/dev/null; then
+    chezmoi init --apply --source "$ROOT"
+    return
+  fi
+  if command -v mise >/dev/null; then
+    mise exec chezmoi -- chezmoi init --apply --source "$ROOT"
+    return
+  fi
+  sh -c "$(curl -fsSL get.chezmoi.io)" -- init --apply --source "$ROOT"
+}
+
+run_chezmoi_init
+install_jetbrains_nerd_font_linux
+install_jetbrains_nerd_font_windows
+
+echo
+echo "==> Setup terminé."
+echo "    Relance le terminal et sélectionne : JetBrainsMono Nerd Font"
 exit 0
