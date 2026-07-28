@@ -92,12 +92,6 @@ if [[ -S "$HOME/.ssh/wsl-ssh-agent.sock" ]]; then
   export SSH_AUTH_SOCK="$HOME/.ssh/wsl-ssh-agent.sock"
 fi
 
-# BEGIN WSL2 SSH PAGEANT BRIDGE BASHRC
-# In tmux interactive shells, load centralized ssh wrapper function
-if [ -n "$TMUX" ] && [ -f "$HOME/.bash/tmux-bash-env.bash" ]; then
-  . "$HOME/.bash/tmux-bash-env.bash"
-fi
-# END WSL2 SSH PAGEANT BRIDGE BASHRC
 
 # Bash completion (core)
 if ! shopt -oq posix; then
