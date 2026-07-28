@@ -8,25 +8,28 @@ if [[ -d $HOME/.local/bin ]]; then
 fi
 
 {{if not $remote -}}
-# setup gpg-agent ssh
-unset SSH_AGENT_PID
-if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
-  export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
-fi
-
-# fallback to ssh-agent when gpg-agent is not available
-SSH_AGENT_CONF="$HOME/.ssh/agent"
-if [ -e "$SSH_AGENT_CONF" ]; then
-  . "$SSH_AGENT_CONF" > /dev/null
-fi
-ssh-add -l >/dev/null 2>&1
-if [ $? -ne 0 ]; then
-  ssh-agent > "$SSH_AGENT_CONF"
-  if [ $? -ne 0 ]; then
-    echo "ERROR: Could not launch ssh-agent" >&2
+# SSH agent: préférer Pageant (WSL bridge) si présent, sinon gpg-agent / ssh-agent
+if [[ -S "$HOME/.ssh/wsl-ssh-agent.sock" ]]; then
+  export SSH_AUTH_SOCK="$HOME/.ssh/wsl-ssh-agent.sock"
+else
+  unset SSH_AGENT_PID
+  if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
+    export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
   fi
-  . "$SSH_AGENT_CONF" > /dev/null
-  ssh-add
+
+  # fallback to ssh-agent when gpg-agent is not available
+  SSH_AGENT_CONF="$HOME/.ssh/agent"
+  if [ -e "$SSH_AGENT_CONF" ]; then
+    . "$SSH_AGENT_CONF" > /dev/null
+  fi
+  if ! ssh-add -l >/dev/null 2>&1; then
+    ssh-agent > "$SSH_AGENT_CONF"
+    if [ $? -ne 0 ]; then
+      echo "ERROR: Could not launch ssh-agent" >&2
+    fi
+    . "$SSH_AGENT_CONF" > /dev/null
+    ssh-add
+  fi
 fi
 {{- end}}
 
@@ -84,8 +87,10 @@ if [ -f "$HOME/.venv/bin/activate" ]; then
   . "$HOME/.venv/bin/activate"
 fi
 
-# Added by wsl2-ssh-pageant-bridge installer
-export SSH_AUTH_SOCK="$HOME/.ssh/wsl-ssh-agent.sock"
+# Added by wsl2-ssh-pageant-bridge installer (réaffirmé après le reste du bashrc)
+if [[ -S "$HOME/.ssh/wsl-ssh-agent.sock" ]]; then
+  export SSH_AUTH_SOCK="$HOME/.ssh/wsl-ssh-agent.sock"
+fi
 
 # BEGIN WSL2 SSH PAGEANT BRIDGE BASHRC
 # In tmux interactive shells, load centralized ssh wrapper function
