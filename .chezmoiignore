@@ -2,4 +2,6 @@
 **/*.zwc
 setup
 README.md
+README-starship.md
+starship-mhd.toml
 bin/
