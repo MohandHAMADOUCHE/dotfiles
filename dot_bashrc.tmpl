@@ -67,6 +67,7 @@ fi
 if command -v kubectl >/dev/null 2>&1; then
   # shellcheck source=/usr/bin/kubectl
   source <(kubectl completion bash)
+  complete -F __start_kubectl k
 fi
 
 if command -v helm >/dev/null 2>&1; then

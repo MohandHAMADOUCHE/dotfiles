@@ -7,3 +7,33 @@ else
   # Fallback: GNU ls with similar options (no icons)
   alias ll="ls -l --group-directories-first --human-readable"
 fi
+
+# kubectl shortcuts (completion `k` wired in ~/.bashrc after kubectl completion)
+if command -v kubectl >/dev/null 2>&1; then
+  alias k='kubectl'
+  alias kg='kubectl get'
+  alias kgp='kubectl get pods'
+  alias kgd='kubectl get deploy'
+  alias kgs='kubectl get svc'
+  alias kgn='kubectl get nodes'
+  alias kga='kubectl get all'
+  alias kd='kubectl describe'
+  alias kdp='kubectl describe pod'
+  alias kdd='kubectl describe deploy'
+  alias kdel='kubectl delete'
+  alias kl='kubectl logs'
+  alias klf='kubectl logs -f'
+  alias kex='kubectl exec -it'
+  alias kaf='kubectl apply -f'
+  alias kcf='kubectl create -f'
+  alias kpw='kubectl get pods --watch'
+  alias kdscale='kubectl scale deployment'
+  alias kroll_undo='kubectl rollout undo'
+  export do="--dry-run=client -o yaml"
+fi
+
+# Ponytail wrapper for Cursor agent (installé hors chezmoi si présent)
+if [[ -x "$HOME/.local/bin/cursor-agent-ponyask" ]]; then
+  alias cursor-agent='cursor-agent-ponyask'
+  alias agent='cursor-agent-ponyask'
+fi
