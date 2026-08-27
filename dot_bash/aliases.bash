@@ -43,23 +43,18 @@ if command -v kubectl >/dev/null 2>&1; then
   }
 fi
 
+# kubectx / kubens short aliases + official Tab completion
 if command -v kubectx >/dev/null 2>&1; then
   alias kx='kubectx'
+  # shellcheck source=/dev/null
+  [[ -f /usr/share/kubectx/completion/kubectx.bash ]] && . /usr/share/kubectx/completion/kubectx.bash
+  complete -F _kube_contexts kx
 fi
 if command -v kubens >/dev/null 2>&1; then
   alias kn='kubens'
-fi
-
-# Context / namespace switchers with live Tab completion
-if command -v kubectx >/dev/null 2>&1; then
-  ksite() { kubectx "${1:?usage: ksite <context>}"; }
-  _ksite() { COMPREPLY=( $(compgen -W "$(kubectl config get-contexts -o name 2>/dev/null)" -- "${COMP_WORDS[COMP_CWORD]}") ); }
-  complete -F _ksite ksite
-fi
-if command -v kubens >/dev/null 2>&1; then
-  kns() { kubens "${1:?usage: kns <namespace>}"; }
-  _kns() { COMPREPLY=( $(compgen -W "$(kubectl get ns -o jsonpath='{.items[*].metadata.name}' 2>/dev/null)" -- "${COMP_WORDS[COMP_CWORD]}") ); }
-  complete -F _kns kns
+  # shellcheck source=/dev/null
+  [[ -f /usr/share/kubectx/completion/kubens.bash ]] && . /usr/share/kubectx/completion/kubens.bash
+  complete -F _kube_namespaces kn
 fi
 
 # Ponytail wrapper for Cursor agent (installé hors chezmoi si présent)
