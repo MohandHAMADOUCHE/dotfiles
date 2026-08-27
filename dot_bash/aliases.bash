@@ -30,6 +30,24 @@ if command -v kubectl >/dev/null 2>&1; then
   alias kdscale='kubectl scale deployment'
   alias kroll_undo='kubectl rollout undo'
   export do="--dry-run=client -o yaml"
+
+  # Confort générique (pas de ns/site client)
+  alias kroll='kubectl rollout status deploy'
+  alias kpods='kubectl get pods -o wide'
+  alias kev='kubectl get events --sort-by=.lastTimestamp'
+  kwhere() {
+    local ctx ns
+    ctx="$(kubectl config current-context 2>/dev/null)"
+    ns="$(kubectl config view --minify -o jsonpath='{..namespace}' 2>/dev/null)"
+    echo "ctx=${ctx:-?}  ns=${ns:-default}"
+  }
+fi
+
+if command -v kubectx >/dev/null 2>&1; then
+  alias kx='kubectx'
+fi
+if command -v kubens >/dev/null 2>&1; then
+  alias kn='kubens'
 fi
 
 # Ponytail wrapper for Cursor agent (installé hors chezmoi si présent)

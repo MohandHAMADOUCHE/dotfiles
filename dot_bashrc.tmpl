@@ -78,6 +78,12 @@ if command -v helm >/dev/null 2>&1; then
   source <(helm completion bash)
 fi
 
+# Local overrides (machine-specific, hors repo public) — après completions kubectl/helm
+if [[ -f $HOME/.bash/aliases.local.bash ]]; then
+  # shellcheck source=/dev/null
+  source "$HOME/.bash/aliases.local.bash"
+fi
+
 # use bat instead of c
 if command -v bat >/dev/null; then
   alias c="bat"
