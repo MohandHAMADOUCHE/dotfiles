@@ -111,3 +111,24 @@ gitfind() {
         find "$@" -type d -name ".git" -prune -exec dirname {} \;
     fi
 }
+
+# Historique résilient (WSL) — survit aux wsl --shutdown / resize VHDX
+export HISTSIZE=50000
+export HISTFILESIZE=50000
+export HISTCONTROL=ignoredups:erasedups:ignorespace
+export HISTTIMEFORMAT='%F %T  '
+export HISTIGNORE='ls:ll:cd:cd -:pwd:exit:clear:history:fg:bg:cursor-agent'
+shopt -s histappend
+PROMPT_COMMAND="history -a; ${PROMPT_COMMAND}"
+
+# ↑/↓ : chercher dans l'historique selon le préfixe déjà tapé
+bind '"\e[A": history-search-backward'
+bind '"\e[B": history-search-forward'
+
+# Ctrl+R amélioré si fzf dispo
+if command -v fzf >/dev/null 2>&1; then
+  eval "$(fzf --bash)"
+fi
+
+alias wsl-save-hist='history -a'
+alias hist-bak='cp -a ~/.bash_history ~/.bash_history.bak'
