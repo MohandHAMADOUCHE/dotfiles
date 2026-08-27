@@ -31,7 +31,7 @@ if command -v kubectl >/dev/null 2>&1; then
   alias kroll_undo='kubectl rollout undo'
   export do="--dry-run=client -o yaml"
 
-  # Confort générique (pas de ns/site client)
+  # Generic comfort (no client ns/site names)
   alias kroll='kubectl rollout status deploy'
   alias kpods='kubectl get pods -o wide'
   alias kev='kubectl get events --sort-by=.lastTimestamp'

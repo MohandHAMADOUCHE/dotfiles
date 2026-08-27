@@ -78,7 +78,7 @@ if command -v helm >/dev/null 2>&1; then
   source <(helm completion bash)
 fi
 
-# Local overrides (machine-specific, hors repo public) — après completions kubectl/helm
+# Local overrides (machine-specific, not in public repo) — after kubectl/helm completions
 if [[ -f $HOME/.bash/aliases.local.bash ]]; then
   # shellcheck source=/dev/null
   source "$HOME/.bash/aliases.local.bash"
@@ -118,7 +118,7 @@ gitfind() {
     fi
 }
 
-# Historique résilient (WSL) — survit aux wsl --shutdown / resize VHDX
+# Resilient history (WSL) — survives wsl --shutdown / VHDX resize
 export HISTSIZE=50000
 export HISTFILESIZE=50000
 export HISTCONTROL=ignoredups:erasedups:ignorespace
@@ -127,11 +127,11 @@ export HISTIGNORE='ls:ll:cd:cd -:pwd:exit:clear:history:fg:bg:cursor-agent'
 shopt -s histappend
 PROMPT_COMMAND="history -a; ${PROMPT_COMMAND}"
 
-# ↑/↓ : chercher dans l'historique selon le préfixe déjà tapé
+# Up/Down: search history by already-typed prefix
 bind '"\e[A": history-search-backward'
 bind '"\e[B": history-search-forward'
 
-# Ctrl+R amélioré si fzf dispo
+# Better Ctrl+R when fzf is available
 if command -v fzf >/dev/null 2>&1; then
   eval "$(fzf --bash)"
 fi
