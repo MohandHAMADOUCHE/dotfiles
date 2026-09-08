@@ -62,3 +62,6 @@ if [[ -x "$HOME/.local/bin/cursor-agent-ponyask" ]]; then
   alias cursor-agent='cursor-agent-ponyask'
   alias agent='cursor-agent-ponyask'
 fi
+
+# Restart WSL → Pageant bridge (SSH_AUTH_SOCK)
+alias restart='systemctl --user restart wsl2-ssh-pageant-bridge.service'
